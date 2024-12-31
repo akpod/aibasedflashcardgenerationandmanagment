@@ -76,11 +76,11 @@ if 'vectorstore' not in st.session_state:
 
     # Set value of vectorstore key to Chroma 
     st.session_state.vectorstore = Chroma(persist_directory='db',
-                                          embedding_function=OllamaEmbeddings(base_url='https://sacred-currently-quail.ngrok-free.app/',
+                                          embedding_function=OllamaEmbeddings(base_url='http://localhost:11434',
                                                                               model="llama3")
                                           )
 if 'llm' not in st.session_state:
-    st.session_state.llm = Ollama(base_url="https://sacred-currently-quail.ngrok-free.app/",
+    st.session_state.llm = Ollama(base_url="http://localhost:11434",
                                   model="llama3",
                                   verbose=True,
                                   callback_manager=CallbackManager(
