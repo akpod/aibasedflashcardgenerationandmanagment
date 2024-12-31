@@ -50,6 +50,7 @@ st.title("Generate Flashcards from Your PDFs")
 # Upload a PDF file
 uploaded_file = st.file_uploader("Upload your PDF", type='pdf')
 
+# Check if the uploaded file is already processed
 if uploaded_file is not None:
     if not os.path.isfile("files/"+uploaded_file.name+".pdf"):
         with st.status("Analyzing your document..."):
@@ -91,12 +92,14 @@ if uploaded_file is not None:
     if st.button("Generate Flashcards"):
         st.session_state.flashcards.clear()  # Clear any previous flashcards
         with st.spinner("Generating flashcards..."):
-            for chunk in all_splits:
-                response = st.session_state.qa_chain(chunk['text'])
-                question = f"What is {response['result'][:50]}?"
-                answer = response['result'][50:]  # This is just an example; customize as needed
-                flashcard = {'question': question, 'answer': answer}
-                st.session_state.flashcards.append(flashcard)
+            # Make sure 'all_splits' is defined here if the PDF is uploaded
+            if 'all_splits' in locals() or 'all_splits' in globals():
+                for chunk in all_splits:
+                    response = st.session_state.qa_chain(chunk['text'])
+                    question = f"What is {response['result'][:50]}?"
+                    answer = response['result'][50:]  # This is just an example; customize as needed
+                    flashcard = {'question': question, 'answer': answer}
+                    st.session_state.flashcards.append(flashcard)
 
         # Display Flashcards
         st.subheader("Generated Flashcards")
@@ -104,5 +107,6 @@ if uploaded_file is not None:
             st.write(f"**Flashcard {i}:**")
             st.write(f"**Question:** {flashcard['question']}")
             st.write(f"**Answer:** {flashcard['answer']}")
+
 else:
     st.write("Please upload a PDF file.")
